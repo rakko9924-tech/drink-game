@@ -36,3 +36,6 @@ dist/
 *.cer
 *.certSigningRequest
 ExportOptions*.plist
+
+# Capacitor simulator derived data
+**/ddsim/
