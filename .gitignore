@@ -14,3 +14,25 @@ ios/App/App/public/
 .DS_Store
 *.xcuserstate
 **/xcuserdata/
+
+# Dependencies / build artifacts
+node_modules/
+ios/App/Pods/
+**/build/
+**/DerivedData/
+**/*.xcarchive/
+ios/App/export/
+ios/App/App/public/
+dist/
+.DS_Store
+*.xcuserstate
+**/xcuserdata/
+# --- secrets: never commit signing material ---
+**/signing/
+*.p12
+*.mobileprovision
+*.keychain-db
+*.p8
+*.cer
+*.certSigningRequest
+ExportOptions*.plist
