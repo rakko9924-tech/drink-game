@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+# CocoaPods
+ios/App/Pods/
+# Build artifacts
+ios/App/build/
+ios/App/archive.xcarchive/
+ios/App/export/
+ios/App/DerivedData/
+**/DerivedData/
+# Capacitor-generated web copy
+ios/App/App/public/
+# macOS / Xcode user state
+.DS_Store
+*.xcuserstate
+**/xcuserdata/

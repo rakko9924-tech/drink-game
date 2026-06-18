@@ -1,0 +1,8 @@
+{
+  "appId": "tech.rakko9924.nomigame",
+  "appName": "のみゲー ルーレット",
+  "webDir": "www",
+  "ios": {
+    "contentInset": "always"
+  }
+}

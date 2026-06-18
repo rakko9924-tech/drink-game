@@ -1,0 +1,21 @@
+{
+  "name": "nomi-game-roulette",
+  "version": "1.0.0",
+  "private": true,
+  "description": "のみゲー ルーレット — 長押しで回す飲みゲーアプリ",
+  "scripts": {
+    "ios:add": "cap add ios",
+    "ios:sync": "cap sync ios",
+    "ios:open": "cap open ios",
+    "ios:run": "cap run ios"
+  },
+  "dependencies": {
+    "@capacitor-community/admob": "^6.1.0",
+    "@capacitor/core": "^6.1.0",
+    "@capacitor/ios": "^6.1.0",
+    "cordova-plugin-purchase": "^13.17.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.1.0"
+  }
+}
