@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rakko9924-tech.github.io/drink-game/sitemap.xml
