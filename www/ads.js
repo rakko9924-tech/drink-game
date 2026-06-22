@@ -5,8 +5,8 @@
 (function () {
   /* ===== 設定（AdSense） =====
      ⚠️ AdSenseアカウント作成＆サイト審査承認後に、実際のスロットIDへ差し替える。
-     client は AdMobと同一の publisher 番号を想定（ca-pub-1975437480047330）。要確認。 */
-  const ADSENSE_CLIENT = 'ca-pub-1975437480047330';
+     client は AdMobと同一の publisher 番号を想定（ca-pub-1501117379039802）。要確認。 */
+  const ADSENSE_CLIENT = 'ca-pub-1501117379039802';
   const SLOT = {
     banner:       '0000000001', // TODO: AdSenseで「ディスプレイ広告」ユニット作成→ID差し替え
     interstitial: '0000000002', // TODO: 同上（全画面用）
