@@ -125,7 +125,10 @@
   .tier-hard{ background:var(--accent); color:#fff; }
   .tier-chaos{ background:#9b51e0; color:#fff; }
   .tier-extreme{ background:#ff1744; color:#fff; }
+  .tier-hell{ background:#ff3d00; color:#fff; }
   .tier-spicy{ background:#ff5fa2; color:#fff; }
+  .tier-spicy2{ background:#ff2d78; color:#fff; }
+  .age-badge{ display:inline-block; font-size:10px; font-weight:800; color:#fff; background:#c2185b; border-radius:8px; padding:1px 6px; margin-left:6px; vertical-align:middle; }
   .card.extreme{ background:linear-gradient(160deg,#fff,#ffe3e8); }
   .card.extreme.result{ animation:pop .5s cubic-bezier(.2,1.4,.4,1), flash .6s ease 3; }
   @keyframes flash{ 0%,100%{ box-shadow:0 18px 50px rgba(0,0,0,.55), inset 0 0 0 6px #ff1744 } 50%{ box-shadow:0 0 60px 10px rgba(255,23,68,.9), inset 0 0 0 8px #ff1744 } }
@@ -231,10 +234,7 @@
       <div class="sec-title">出すカードのジャンル</div>
       <div id="tierRows"></div>
 
-      <div class="sec-title">大人のドキドキパック（17+）</div>
-      <div class="pack" id="spicyPack"></div>
-
-      <p class="age">「大人のドキドキパック」はキス・ハグなど軽いスキンシップ系のお題を含みます。<br>飲酒は20歳になってから。お酒は楽しく・無理のない範囲で。</p>
+      <p class="age">💕/🔥 の大人向けパックはキス・ハグなどのスキンシップ系お題を含みます（17+/18+）。ONにする際に年齢確認があります。お題はすべて全員の同意のうえ、無理のない範囲で。<br>飲酒は20歳になってから。お酒は楽しく・無理のない範囲で。</p>
       <p class="age" style="opacity:.6"><a href="privacy.html" style="color:#fff">プライバシーポリシー</a></p>
     </div>
   </section>
@@ -300,9 +300,18 @@ const CARDS = [
   {e:"🔫", l:"ロシアンルーレット", d:"全員で順に半気→最後に止まった人は一気", t:"extreme"},
   {e:"🌪️", l:"無限ループ", d:"もう一度引く。出たカードを2回やる…運が悪いと無限", t:"extreme"},
   {e:"🚀", l:"カウントダウン", d:"30秒以内にグラスを飲み干せ。間に合わなきゃもう1杯", t:"extreme"},
+  // hell（地獄級・やばすぎの上・超低確率／飲みは常識の範囲で、無理はソフトドリンクへ）
+  {e:"🌋", l:"地獄の水割り", d:"隣2人が“好きに”作った1杯を飲み干す（アルコールは常識の範囲で）。無理ならソフトドリンクで倍量", t:"hell"},
+  {e:"🎪", l:"全員の下僕", d:"カードが1周するまで、全員の“飲み以外”の命令に従う（常識の範囲で）", t:"hell"},
+  {e:"👑", l:"独裁者", d:"あなたが絶対王様。1つだけ全員に命令できる（飲み or 罰・常識の範囲で）", t:"hell"},
+  {e:"📢", l:"黒歴史フルオープン", d:"人生で一番の黒歴史を包み隠さず告白。ぼかしたら一気", t:"hell"},
+  {e:"🎤", l:"全力熱唱", d:"好きな曲のサビを立ち上がって全力熱唱。棒立ちなら全員一気の指名", t:"hell"},
+  {e:"🩳", l:"1点だけ交換", d:"上着・靴下など“外側の1点”を隣の人と交換してしばらく着用😳 無理なら一気", t:"hell"},
+  {e:"🔥", l:"真実の指名", d:"“この中で一番タイプ”を正直に指名。言えなきゃ一気", t:"hell"},
+  {e:"🌪️", l:"ダブル地獄", d:"もう2回引いて、出た2枚を両方やる☠️", t:"hell"},
 ];
 
-/* 大人のドキドキパック（課金で解放・17+ / 軽いスキンシップ中心の控えめなお題） */
+/* 大人のドキドキパック（17+ / 軽いスキンシップ中心の控えめなお題・トグルでON） */
 const SPICY = [
   {e:"💋", l:"ほっぺにキス", d:"右隣の人のほっぺにキス。恥ずかしければ一気で回避", t:"spicy"},
   {e:"👀", l:"見つめ合い", d:"気になる人と10秒間見つめ合う。笑ったら飲み", t:"spicy"},
@@ -318,31 +327,47 @@ const SPICY = [
   {e:"💌", l:"褒め殺し", d:"右隣の人の魅力を30秒ほめ続ける。詰まったら飲み", t:"spicy"},
 ];
 
-const TIER_LABEL  = { soft:"SAFE", mid:"NORMAL", hard:"HARD", chaos:"CHAOS", extreme:"YABASUGI", spicy:"ADULT" };
-const TIER_WEIGHT = { soft:12, mid:12, hard:8, chaos:6, extreme:1, spicy:8 };
+/* 大人のプレミアムパック（ドキドキパックの上位互換・18+ / もっと大胆＝ただし全員合意&非露骨） */
+const SPICY2 = [
+  {e:"💋", l:"3秒キスの構え", d:"好きな人と顔を近づけて3秒キープ。相手がOKなら…あとはご自由に😏 NGなら一気", t:"spicy2"},
+  {e:"🫦", l:"耳たぶ攻撃", d:"隣の人の耳元で“一番言われたい言葉”を甘く囁く。照れたら飲み", t:"spicy2"},
+  {e:"👀", l:"至近距離見つめ合い", d:"顔の距離10cmで15秒見つめ合う。先に逸らしたら一気", t:"spicy2"},
+  {e:"🤝", l:"ボディタッチ指令", d:"相手の同意を得て“肩・腕・手”のどこかに10秒タッチ。断られたら一気", t:"spicy2"},
+  {e:"🍒", l:"さくらんぼの結び", d:"軸を口だけで結べるか挑戦（無ければジェスチャーで）。失敗なら飲み", t:"spicy2"},
+  {e:"💃", l:"セクシーダンス30秒", d:"色っぽく30秒踊る。棒立ちなら全員から一気の指名", t:"spicy2"},
+  {e:"🫂", l:"バックハグ20秒", d:"OKをもらえたら誰かに後ろから20秒ハグ。無理なら半気×2", t:"spicy2"},
+  {e:"💌", l:"きわどい耳打ち", d:"“実はちょっと気になってた人”を本人にだけこっそり耳打ち。しなきゃ一気", t:"spicy2"},
+  {e:"🎀", l:"膝の上10秒", d:"合意があれば10秒だけ誰かの膝の上へ（or 招く）。無理なら一気", t:"spicy2"},
+  {e:"👑", l:"王様（プレミアム）", d:"飲み or 大人のスキンシップのお題を1つ命令（全員合意のもと・常識の範囲で）", t:"spicy2"},
+];
+
+const ALL_CARDS = CARDS.concat(SPICY, SPICY2);
+
+const TIER_LABEL  = { soft:"SAFE", mid:"NORMAL", hard:"HARD", chaos:"CHAOS", extreme:"YABASUGI", hell:"JIGOKU", spicy:"ADULT", spicy2:"ADULT+" };
+const TIER_WEIGHT = { soft:12, mid:12, hard:8, chaos:6, extreme:1, hell:1, spicy:8, spicy2:6 };
 const TIER_INFO = [
   { t:"soft",    name:"😇 ゆるめ",       meta:"セーフ・ものまね・ダンスなど" },
   { t:"mid",     name:"🍺 ふつう",       meta:"半気・告白・お酌など" },
   { t:"hard",    name:"🥃 ガチ飲み",     meta:"一気・テキーラ・全員一気など" },
   { t:"chaos",   name:"🤪 カオス",       meta:"無言の刑・席替え・敬語の刑など" },
   { t:"extreme", name:"☠️ やばすぎ",     meta:"超低確率の鬼カード（出ると大惨事）" },
+  { t:"hell",    name:"🌋 地獄級",       meta:"やばすぎのさらに上。極限の鬼カード（超低確率）" },
+  { t:"spicy",   name:"💕 大人のドキドキ",   meta:"キス・ハグなど軽いスキンシップ系（17+）", adult:true, age:"17" },
+  { t:"spicy2",  name:"🔥 大人のプレミアム", meta:"もっと大胆な大人のお題。上位互換（18+）", adult:true, age:"18" },
 ];
 
 /* ===================== 設定の保存/読込 ===================== */
-const SPICY_PRODUCT = 'drinkgame.spicy_pack';
-const DEFAULTS = { tiers:{soft:true,mid:true,hard:true,chaos:true,extreme:true}, spicyEnabled:false };
+const DEFAULTS = { tiers:{soft:true,mid:true,hard:true,chaos:true,extreme:true,hell:true,spicy:false,spicy2:false} };
 let settings = load('dg_settings', DEFAULTS);
-let spicyOwned = load('dg_spicy_owned', false);
-// 旧バージョン互換
-for(const k in DEFAULTS.tiers) if(settings.tiers[k]===undefined) settings.tiers[k]=true;
+// 旧バージョン互換（未定義キーは既定値で補完。大人パックは既定OFF）
+for(const k in DEFAULTS.tiers) if(settings.tiers[k]===undefined) settings.tiers[k]=DEFAULTS.tiers[k];
 
 function load(key, def){ try{ const v=localStorage.getItem(key); return v? JSON.parse(v): def; }catch(e){ return def; } }
-function save(){ try{ localStorage.setItem('dg_settings', JSON.stringify(settings)); localStorage.setItem('dg_spicy_owned', JSON.stringify(spicyOwned)); }catch(e){} }
+function save(){ try{ localStorage.setItem('dg_settings', JSON.stringify(settings)); }catch(e){} }
 
 /* ===================== 抽選プール ===================== */
 function activePool(){
-  let pool = CARDS.filter(c => settings.tiers[c.t]);
-  if(spicyOwned && settings.spicyEnabled) pool = pool.concat(SPICY);
+  let pool = ALL_CARDS.filter(c => settings.tiers[c.t]);
   if(pool.length===0) pool = CARDS.filter(c => c.t==='mid'); // 全OFF時の保険
   return pool;
 }
@@ -375,10 +400,10 @@ function vibrate(ms){ try{ navigator.vibrate && navigator.vibrate(ms); }catch(e)
 
 function applyTier(t){
   tierEl.className='tier tier-'+t; tierEl.textContent=TIER_LABEL[t];
-  const colors={ soft:'#3ddc97', mid:'#ffd23d', hard:'#ff3d7f', chaos:'#9b51e0', extreme:'#ff1744', spicy:'#ff5fa2' };
-  card.style.boxShadow=`0 18px 50px rgba(0,0,0,.55), inset 0 0 0 6px ${colors[t]}`;
-  card.classList.toggle('extreme', t==='extreme');
-  card.classList.toggle('spicy', t==='spicy');
+  const colors={ soft:'#3ddc97', mid:'#ffd23d', hard:'#ff3d7f', chaos:'#9b51e0', extreme:'#ff1744', hell:'#ff3d00', spicy:'#ff5fa2', spicy2:'#ff2d78' };
+  card.style.boxShadow=`0 18px 50px rgba(0,0,0,.55), inset 0 0 0 6px ${colors[t]||'#fff'}`;
+  card.classList.toggle('extreme', t==='extreme'||t==='hell');
+  card.classList.toggle('spicy', t==='spicy'||t==='spicy2');
 }
 function render(c){ emojiEl.textContent=c.e; labelEl.textContent=c.l; descEl.textContent=c.d; applyTier(c.t); }
 
@@ -400,8 +425,8 @@ function stopSpin(){
     else{
       render(curPool[finalIdx]); card.classList.add('result');
       const c=curPool[finalIdx];
-      vibrate(c.t==='extreme' ? [120,60,120,60,250] : c.t==='hard'||c.t==='chaos' ? [80,50,160] : c.t==='soft' ? 50 : [60,40,90]);
-      hint.textContent = c.t==='extreme' ? 'やばすぎ…ご愁傷さま☠️' : c.t==='spicy' ? 'ドキドキ…💕' : c.t==='soft' ? 'ラッキー🎉' : c.t==='chaos' ? 'カオス…😈' : 'のんで〜🍺';
+      vibrate(c.t==='extreme'||c.t==='hell' ? [120,60,120,60,250] : c.t==='hard'||c.t==='chaos' ? [80,50,160] : c.t==='soft' ? 50 : [60,40,90]);
+      hint.textContent = c.t==='hell' ? '地獄級…終わったな🌋' : c.t==='extreme' ? 'やばすぎ…ご愁傷さま☠️' : c.t==='spicy'||c.t==='spicy2' ? 'ドキドキ…💕' : c.t==='soft' ? 'ラッキー🎉' : c.t==='chaos' ? 'カオス…😈' : 'のんで〜🍺';
     }
   };
   slow();
@@ -418,38 +443,24 @@ hint.textContent='長押しでスタート！';
 
 /* ===================== 設定画面の描画 ===================== */
 function renderSettings(){
-  // ジャンルトグル
   const rows = TIER_INFO.map(info=>{
     const on = settings.tiers[info.t] ? 'checked':'';
-    return `<div class="row"><div class="info"><div class="name">${info.name}</div><div class="meta">${info.meta}</div></div>
+    const badge = info.adult ? ` <span class="age-badge">${info.age}+</span>` : '';
+    return `<div class="row"><div class="info"><div class="name">${info.name}${badge}</div><div class="meta">${info.meta}</div></div>
       <div class="sw"><input type="checkbox" id="t_${info.t}" ${on}><label for="t_${info.t}"></label></div></div>`;
   }).join('');
   byId('tierRows').innerHTML = rows;
   TIER_INFO.forEach(info=>{
-    byId('t_'+info.t).onchange = e=>{ settings.tiers[info.t]=e.target.checked; save(); };
+    byId('t_'+info.t).onchange = e=>{
+      // 大人向けパックは初回ONで年齢確認。断ったらトグルを戻す
+      if(e.target.checked && info.adult){
+        const ok = confirm(`「${info.name.replace(/^[^ ]+\s/, '')}」はキス・ハグなどのスキンシップ系お題を含みます（${info.age}歳以上向け）。\nあなたは${info.age}歳以上ですか？`);
+        if(!ok){ e.target.checked=false; return; }
+        toast('ONにしました💕');
+      }
+      settings.tiers[info.t]=e.target.checked; save();
+    };
   });
-
-  // 課金パック
-  const pack = byId('spicyPack');
-  if(spicyOwned){
-    pack.innerHTML = `<div class="owned-row">
-        <div><h3>💕 大人のドキドキパック</h3><div class="lead" style="margin:0">解放済み — ゲームに混ぜるか選べます</div></div>
-        <div class="sw"><input type="checkbox" id="spicyToggle" ${settings.spicyEnabled?'checked':''}><label for="spicyToggle"></label></div>
-      </div>`;
-    byId('spicyToggle').onchange = e=>{ settings.spicyEnabled=e.target.checked; save(); };
-  }else{
-    pack.innerHTML = `<h3>💕 大人のドキドキパック</h3>
-      <div class="lead">キス・ハグ・見つめ合いなど、ちょっと大人な“ドキドキ系”お題を12枚追加。カップル・合コンで盛り上がる17+の追加パック。</div>
-      <button class="price-btn" id="buyBtn">💕 解放する（17+）</button>`;
-    byId('buyBtn').onclick = onUnlock;
-  }
-}
-
-/* ===================== 解放（年齢確認で無料解放・17+） ===================== */
-function onUnlock(){
-  if(!confirm('「大人のドキドキパック」はキス・ハグなど軽いスキンシップ系のお題を含みます（17歳以上向け）。\nあなたは17歳以上ですか？')){ return; }
-  spicyOwned=true; settings.spicyEnabled=true; save();
-  toast('解放しました！💕'); renderSettings();
 }
 
 /* ===================== トースト ===================== */
