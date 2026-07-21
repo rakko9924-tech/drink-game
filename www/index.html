@@ -54,8 +54,6 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <link rel="icon" href="icons/icon-192.png">
-<!-- Google AdSense（審査承認後に有効化。クライアントIDは要確認）-->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1501117379039802" crossorigin="anonymous"></script>
 <title>のみゲー ルーレット🍻 | 飲み会・パーティーが盛り上がる無料ルーレット</title>
 <style>
   :root{
@@ -64,7 +62,6 @@
     --accent:#ff3d7f;
     --accent2:#ffd23d;
     --safe:#3ddc97;
-    --banner-h:56px;
   }
   *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none; -webkit-user-select:none; }
   html,body{ margin:0; height:100%; overflow:hidden; font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Helvetica Neue",sans-serif; }
@@ -79,8 +76,6 @@
   .screen{ position:fixed; inset:0; display:none; flex-direction:column; align-items:center;
            padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom); }
   .screen.active{ display:flex; }
-  /* バナー表示中はホーム/プレイ画面の下部にスペースを確保 */
-  body.banner-on #home, body.banner-on #game{ padding-bottom:calc(var(--banner-h) + env(safe-area-inset-bottom)); }
 
   /* ===== 共通ボタン ===== */
   .big-btn{
@@ -246,7 +241,6 @@
 
   <div class="toast" id="toast"></div>
 
-<script src="ads.js"></script>
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); });
@@ -364,16 +358,7 @@ const screens = { home:byId('home'), game:byId('game'), settings:byId('settings'
 function show(name){
   for(const k in screens) screens[k].classList.toggle('active', k===name);
   if(name==='settings') renderSettings();
-  // バナー: ホーム/プレイ画面で表示、設定では非表示
-  updateBanner(name);
 }
-function updateBanner(name){
-  if(!window.ADS) return;
-  if(name==='home' || name==='game'){ document.body.classList.add('banner-on'); window.ADS.showBanner(); }
-  else{ document.body.classList.remove('banner-on'); window.ADS.hideBanner(); }
-}
-// ads.js の準備完了後に現在の画面へバナーを反映
-window.onAdsReady = function(){ const cur = ['home','game','settings'].find(n=>screens[n].classList.contains('active')) || 'home'; updateBanner(cur); };
 function byId(id){ return document.getElementById(id); }
 
 byId('toGame').onclick     = ()=> show('game');
@@ -417,8 +402,6 @@ function stopSpin(){
       const c=curPool[finalIdx];
       vibrate(c.t==='extreme' ? [120,60,120,60,250] : c.t==='hard'||c.t==='chaos' ? [80,50,160] : c.t==='soft' ? 50 : [60,40,90]);
       hint.textContent = c.t==='extreme' ? 'やばすぎ…ご愁傷さま☠️' : c.t==='spicy' ? 'ドキドキ…💕' : c.t==='soft' ? 'ラッキー🎉' : c.t==='chaos' ? 'カオス…😈' : 'のんで〜🍺';
-      // 1回回しきったら広告カウント（20回ごとに全画面広告）
-      if(window.ADS && window.ADS.notifySpin) window.ADS.notifySpin();
     }
   };
   slow();
@@ -456,23 +439,17 @@ function renderSettings(){
     byId('spicyToggle').onchange = e=>{ settings.spicyEnabled=e.target.checked; save(); };
   }else{
     pack.innerHTML = `<h3>💕 大人のドキドキパック</h3>
-      <div class="lead">キス・ハグ・見つめ合いなど、ちょっと大人な“ドキドキ系”お題を12枚追加。カップル・合コンで盛り上がる17+の追加パック。<br>広告を最後まで見ると無料で解放できます。</div>
-      <button class="price-btn" id="buyBtn">🎬 広告を見て解放（17+）</button>`;
+      <div class="lead">キス・ハグ・見つめ合いなど、ちょっと大人な“ドキドキ系”お題を12枚追加。カップル・合コンで盛り上がる17+の追加パック。</div>
+      <button class="price-btn" id="buyBtn">💕 解放する（17+）</button>`;
     byId('buyBtn').onclick = onUnlock;
   }
 }
 
-/* ===================== 解放（広告視聴で無料解放・17+） ===================== */
+/* ===================== 解放（年齢確認で無料解放・17+） ===================== */
 function onUnlock(){
   if(!confirm('「大人のドキドキパック」はキス・ハグなど軽いスキンシップ系のお題を含みます（17歳以上向け）。\nあなたは17歳以上ですか？')){ return; }
-  const b = byId('buyBtn'); if(b){ b.disabled=true; b.textContent='広告を準備中…'; }
-  const watch = (window.ADS && window.ADS.watchAdToUnlock) ? window.ADS.watchAdToUnlock(30) : Promise.resolve(true);
-  watch.then(()=>{
-    spicyOwned=true; settings.spicyEnabled=true; save();
-    toast('解放しました！💕'); renderSettings();
-  }).catch(()=>{
-    toast('解放をキャンセルしました'); renderSettings();
-  });
+  spicyOwned=true; settings.spicyEnabled=true; save();
+  toast('解放しました！💕'); renderSettings();
 }
 
 /* ===================== トースト ===================== */

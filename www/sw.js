@@ -1,9 +1,8 @@
 /* sw.js — のみゲー ルーレット 簡易サービスワーカー（オフライン対応 / インストール可能化） */
-const CACHE = 'nomigame-v2';
+const CACHE = 'nomigame-v3';
 const ASSETS = [
   './',
   './index.html',
-  './ads.js',
   './manifest.json',
   './og-image.png',
   './icons/icon-192.png',
@@ -21,7 +20,7 @@ self.addEventListener('fetch', (e) => {
   const req = e.request;
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
-  // 広告など外部リソースはキャッシュせずネットワークへ
+  // 外部リソースはキャッシュせずネットワークへ
   if (url.origin !== location.origin) return;
   e.respondWith(
     caches.match(req).then((hit) => hit || fetch(req).then((res) => {
